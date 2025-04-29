@@ -1,0 +1,33 @@
+name: Build EXE
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install pyinstaller matplotlib torch scikit-learn
+
+      - name: Build EXE
+        run: |
+          pyinstaller --onefile --windowed main.py
+
+      - name: Upload EXE artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: neural-app-exe
+          path: dist/main.exe
